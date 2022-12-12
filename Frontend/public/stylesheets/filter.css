@@ -1,0 +1,115 @@
+
+#nsidebar {
+    width: 350px;
+    min-width: 250px;
+    position: relative;
+    border-radius: 10px;
+    margin:10px;
+    padding:40px 10px;
+    height: 100%;
+    z-index: 0;
+    /* background: #478ba2e8; */
+    background-color: #e3e6e9;
+    color: #000;
+    transition: all 0.3s;
+    box-shadow: 0px 0px 10px 2px rgba(102, 102, 102, 0.253);
+}
+#nsidebar ul li{
+    background-color:#fff;
+    padding: 10px;
+    border-radius: 9px;
+    margin: 8px 5px;
+}
+
+#clearFilter{
+margin-top:8px;
+color:#388ca8;
+font-weight: 600;
+text-transform: uppercase;
+cursor: pointer;
+font-size: 13px;
+}
+
+.filterHeader{
+    font-size: 16px;
+    font-weight: 550;
+}
+
+.filterError{
+    font-size: 14px;
+    margin-left: 10px;
+    color:rgb(240, 93, 93)
+    }
+ 
+#brandFilter label,
+#sizeFilter label,
+#colorFilter label,
+#categoryFilter label,
+#materialFilter label,
+#suitedForFilter label{
+    font-size:14px;
+    vertical-align:top;
+    cursor: pointer;
+}
+
+.viewmore, .viewless{
+    text-decoration: none;
+    text-align: right;
+    width: 100%;
+    padding-right: 10px;
+    font-size:14px;
+    color:#388ca8;
+}
+.viewmore:hover, .viewless:hover{
+    text-decoration: underline;
+    color:#4993ac;
+    cursor: pointer;
+}
+
+.viewless{
+    display: none;
+}
+
+.brands{
+    display: none;
+}
+
+.priceLable{
+    margin-top: 2px;
+    font-size: 14px;
+}
+
+
+#priceFilter input[type="Number"]{
+    width:100%;
+    margin:0px 7px;
+    border-radius: 7px;
+    vertical-align: baseline;
+    padding-left: 5px;
+    font-size: 14px;
+    font-weight: 500;
+    color:black;
+
+}
+
+
+.dot {
+    height: 15px;
+    width: 15px;
+    background-color: #bbb;
+    border-radius: 50%;
+    display: inline-block;
+    vertical-align: center;
+    box-shadow: 0px 0px 3px 0.8px rgba(0, 0, 0, 0.178);
+    transition: all 0.3s;
+  }
+
+  .dot:hover{
+      transform: scale(1.2);
+      cursor: pointer;
+  }
+
+  .multicolor{
+    background-image: -webkit-gradient( linear, left top, right top, color-stop(0, #f22), color-stop(0.15, #f2f), color-stop(0.3, #22f), color-stop(0.45, #2ff), color-stop(0.6, #2f2),color-stop(0.75, #2f2), color-stop(0.9, #ff2), color-stop(1, #f22) );
+    background-image: gradient( linear, left top, right top, color-stop(0, #f22), color-stop(0.15, #f2f), color-stop(0.3, #22f), color-stop(0.45, #2ff), color-stop(0.6, #2f2),color-stop(0.75, #2f2), color-stop(0.9, #ff2), color-stop(1, #f22) );
+  }

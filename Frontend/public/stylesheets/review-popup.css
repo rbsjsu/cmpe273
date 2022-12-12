@@ -1,0 +1,52 @@
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css");
+
+div.stars {
+   
+    display: inline-block
+}
+
+input.star {
+    display: none
+}
+
+label.star {
+    float: right;
+    padding: 0px 10px;
+    font-size: 36px;
+    color: darkgrey;
+    transition: all .2s
+}
+
+input.star:checked~label.star::before {
+    content: '\f005';
+    font-family: "Font Awesome 5 Free";
+    color: #de5b6d;
+    transition: all .3s;
+    font-weight: 550;
+
+}
+
+input.star-5:checked~label.star::before {
+    color: #de5b6d;
+    font-weight: 700;
+    text-shadow: 0px 0px 7px #de5b6d6c;
+   
+}
+
+input.star-1:checked~label.star::before {
+    color: #de5b6d;
+    opacity: 0.8;
+    font-weight: 800;
+}
+
+.stars>input:hover ~ label{
+    transform: rotate(-10deg) scale(1.1);
+    opacity: 0.8;
+    color: #de5b6d;
+    font-weight: 800;
+}
+
+label.star:before {
+    content: '\f005';
+    font-family: "Font Awesome 5 Free";
+} 

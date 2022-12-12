@@ -1,0 +1,225 @@
+<!-- Sidebar -->
+<div id="nsidebar">
+  <span style="font-size:20px; font-weight:500;margin-left:10px;">Filters:</span>
+  <span class="float-right mr-2" id="clearFilter">clear All</span>
+  <ul class="list-unstyled components">
+    <%if(filter.category.length>0){%>
+      <!-- Category Start -->
+      <li id="categoryFilter">
+        <span class="filterHeader">Category:</span>
+        <div class="form-check">
+          <input class="form-check-input " type="checkbox" value="*" id="allcategory" checked>
+          <label class="form-check-label" for="allcategory">
+            All
+          </label>
+        </div>
+        <% filter.category.forEach((category,index)=>{ %>
+
+          <% if(index==4){ %>
+            <div class="categories" style="display: none;">
+              <% } %>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="<%=category.slug%>" id="<%=category.slug%>">
+                  <label class="form-check-label" for="<%=category.slug %>">
+                    <%= category.title %>
+                  </label>
+                </div>
+                <% }) %>
+
+                  <% if(filter.category.length>4){ %>
+            </div>
+            <div class="viewmore" id="categoriesmore" cs-filter="categories"><span>+view more</span></div>
+            <div class="viewless" id="categoriesless" cs-filter="categories"><span>-view less</span></div>
+            <% } %>
+      </li>
+      <!-- Category End -->
+      <%}%>
+
+    <%if(filter.suitedFor.length>0){%>
+      <!-- suitedFor Start -->
+      <li id="suitedForFilter">
+        <span class="filterHeader">Suited For:</span>
+        <div class="form-check">
+          <input class="form-check-input " type="checkbox" value="*" id="allsuitedFor" checked>
+          <label class="form-check-label" for="allsuitedFor">
+            All
+          </label>
+        </div>
+        <% filter.suitedFor.forEach((suite,index)=>{ %>
+
+          <% if(index==4){ %>
+            <div class="suitedFors" style="display: none;">
+              <% } %>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="<%=suite%>" id="<%=suite%>">
+                  <label class="form-check-label" for="<%=suite %>">
+                    <%= suite %>
+                  </label>
+                </div>
+                <% }) %>
+
+                  <% if(filter.suitedFor.length>4){ %>
+            </div>
+            <div class="viewmore" id="suitedForsmore" cs-filter="suitedFors"><span>+view more</span></div>
+            <div class="viewless" id="suitedForsless" cs-filter="suitedFors"><span>-view less</span></div>
+            <% } %>
+      </li>
+      <!-- suitedFor End -->
+      <%}%>
+
+    <%if(filter.brand.length>0){%>
+      <!-- Brand Start -->
+      <li id="brandFilter">
+        <span class="filterHeader">Brand:</span>
+        <div class="form-check">
+          <input class="form-check-input " type="checkbox" value="*" id="allbrand" checked>
+          <label class="form-check-label" for="allbrand">
+            All brands
+          </label>
+        </div>
+        <% filter.brand.forEach((brand,index)=>{ %>
+
+          <% if(index==4){ %>
+            <div class="brands" style="display: none;">
+              <% } %>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="<%=brand%>" id="<%=brand %>">
+                  <label class="form-check-label" for="<%=brand %>">
+                    <%= brand %>
+                  </label>
+                </div>
+                <% }) %>
+
+                  <% if(filter.brand.length>4){ %>
+            </div>
+            <div class="viewmore" id="brandsmore" cs-filter="brands"><span>+view more</span></div>
+            <div class="viewless" id="brandsless" cs-filter="brands"><span>-view less</span></div>
+            <% } %>
+      </li>
+      <!-- Brand End -->
+      <%}%>
+
+    <%if(filter.price){%>
+      <!-- Price Start -->
+      <li id="priceFilter">
+        <span class="filterHeader">Price:</span>
+        <div style="display: flex; justify-content: space-evenly;">
+          <span class="priceLable">Rs. </span>
+          <input type="Number" class="form-text price" value="<%= filter.price.min %>" min="0" step="50"
+            max="50000" id="minPrice">
+          <span class="priceLable"><b>-</b> </span>
+          <span class="priceLable">Rs. </span>
+          <input type="Number" class="form-text price" value="<%= filter.price.max %>" min="0" step="50"
+            max="50000" id="maxPrice">
+        </div>
+        <span class="filterError"></span>
+      </li>
+      <!-- Price End -->
+      <%}%>
+
+    <%if(filter.size.length>0){%>
+      <!-- Size start -->
+      <li id="sizeFilter">
+        <span class="filterHeader">Size:</span>
+        <div class="form-check">
+          <input class="form-check-input " type="checkbox" value="*" id="allsize" checked>
+          <label class="form-check-label" for="allsize">
+            All Sizes
+          </label>
+        </div>
+        <% filter.size.forEach((size,index)=>{ %>
+
+          <% if(index==4){ %>
+            <div class="sizes" style="display: none;">
+              <!--  hide extras -->
+              <% } %>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="<%= size%>" id="<%= size%>">
+                  <label class="form-check-label" for="<%= size%>">
+                    <%= size%>
+                  </label>
+                </div>
+                <% }) %>
+
+                  <% if(filter.size.length>4){ %>
+            </div>
+            <div class="viewmore" id="sizesmore" cs-filter="sizes"><span>+view more</span></div>
+            <div class="viewless" id="sizesless" cs-filter="sizes"><span>-view less</span></div>
+            <%}%>
+      </li>
+      <!-- Size End -->
+      <%}%>
+
+    <%if(filter.color.length>0){%>
+      <!-- Color Start -->
+      <li id="colorFilter">
+        <span class="filterHeader">Color:</span>
+        <div class="form-check">
+          <input class="form-check-input " type="checkbox" value="*" id="allcolor" checked>
+          <span class="dot multicolor"></span>
+          <label class="form-check-label" for="allcolor">
+            All Colors
+          </label>
+        </div>
+        <% filter.color.forEach((color,index)=>{ %>
+
+          <% if(index==4){ %>
+            <div class="colors" style="display: none;">
+              <!--  hide extras -->
+              <% } %>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="<%=color%>"
+                    id="<%=color%>">
+                  <span class="dot" style="background-color:<%=color%>;"></span>
+                  <label class="form-check-label" for="<%=color%>">
+                    <%= color.charAt(0).toUpperCase() + color.slice(1).toLowerCase(); %>
+                  </label>
+                </div>
+                <% }) %>
+                  <% if(filter.color.length>4){ %>
+            </div>
+            <div class="viewmore" id="colorssmore" cs-filter="colors"><span>+view more</span></div>
+            <div class="viewless" id="colorsless" cs-filter="colors"><span>-view less</span></div>
+            <%}%>
+      </li>
+      <!-- Color End -->
+      <%}%>
+
+    <%if(filter.material.length>0){%>
+      <!-- Material Start -->
+      <li id="materialFilter">
+        <span class="filterHeader">Material:</span>
+        <div class="form-check">
+          <input class="form-check-input " type="checkbox" value="*" id="allmaterial" checked>
+          <label class="form-check-label" for="allmaterial">
+            All Material
+          </label>
+        </div>
+        <% filter.material.forEach((material,index)=>{ %>
+
+          <% if(index==4){ %>
+            <div class="materials" style="display: none;">
+              <% } %>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="<%=material%>"
+                    id="<%=material%>">
+                  <label class="form-check-label" for="<%=material %>">
+                    <%= material %>
+                  </label>
+                </div>
+                <% }) %>
+
+                  <% if(filter.material.length>4){ %>
+            </div>
+            <div class="viewmore" id="materialsmore" cs-filter="materials"><span>+view
+                more</span></div>
+            <div class="viewless" id="materialsless" cs-filter="materials"><span>-view
+                less</span></div>
+            <% } %>
+      </li>
+      <!-- Material End -->
+      <%}%>
+
+  </ul>
+
+</div>

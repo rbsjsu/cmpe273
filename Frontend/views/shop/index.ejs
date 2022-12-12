@@ -1,0 +1,220 @@
+<%- include ("../partials/header") %> <%- include ("../partials/categories-navbar") %>
+
+<div class="container-fluid">
+  <!-- Flash messages -->
+  <% if(successMsg || errorMsg) {%>
+  <div class="row mt-3 mb-3">
+    <div class="col-md-12 m-auto">
+      <% if (successMsg) { %>
+      <div id="success" class="alert alert-success">
+        <%= successMsg %>
+      </div>
+      <% } else { %>
+      <div id="success" class="alert alert-success d-none"></div>
+      <% } %>
+    </div>
+    <div class="col-md-12 m-auto">
+      <% if (errorMsg) { %>
+      <div id="error" class="alert alert-danger">
+        <%= errorMsg %>
+      </div>
+      <% } else { %>
+      <div id="error" class="alert alert-danger d-none"></div>
+      <% } %>
+    </div>
+  </div>
+  <% } %>
+  <!-- Breadcrumbs -->
+  <div class="row mt-2">
+    <div class="col-md-12 m-auto">
+      <%if (breadcrumbs) { %>
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <% breadcrumbs.forEach(crumb => { if(!crumb.name.startsWith("?")){%>
+          <li class="breadcrumb-item" aria-current="page">
+            <a href="http://localhost:8081/api/<%=crumb.url%>"><%= crumb.name %></a>
+          </li>
+          <%}})%>
+        </ol>
+      </nav>
+      <%} %>
+    </div>
+  </div>
+  <!-- Page banner image -->
+
+  <% if(pageName == 'All Products') { %>
+  <div class="text-center hero-container">
+    <img
+      class="d-block w-100 hero-image"
+      src="http://localhost:8081/inventoryservice/banner/banner-all-products.jpg"
+    />
+    <div class="hero-text">
+      <h1><%=pageName%></h1>
+    </div>
+  </div>
+  <%} else {%> <%categories.forEach( category => {%> <%if(pageName ==
+  category.title){%>
+  <div class="text-center hero-container">
+    <img
+      class="d-block w-100 hero-image"
+      src="http://localhost:8081/inventoryservice/banner/banner-<%=category.slug%>.jpg"
+    />
+    <div class="hero-text">
+      <h1><%=pageName%></h1>
+    </div>
+  </div>
+  <%}%> <%})%> <%}%>
+
+<% if(products.length==0){%>
+  <% if(pageName=="Search Results"){%>
+    <h1>No products found for "<%=searchQuery %>"!!!</h1>
+    <%}else{%>
+      <h1>No products found. :(</h1>
+   <% } %>
+  <%}else{%>
+  
+<!-- ============================================sorting-starts================================================= -->
+<div class="sortFilter " style="display:flex; justify-content:space-between;">
+  <% if(pageName=="Search Results"){%>
+    <span style="font-size: 16px; font-weight: 500; color: rgba(0, 0, 0, 0.644); position:relative; margin-top: 10px; margin-left:20px"> "<%= products.length %>" products found for "<%=searchQuery %>"</span>
+    <%}%>
+    <div style="margin-top:5px;">
+  <label for="cs-sort">Sort&nbsp;by:&nbsp;</label>
+  <select class="form-select form-select-sm  cs-sort" aria-label=".form-select-lg" style="width:15vw; min-width:max-content;">
+    <option selected value="relevance">Relevance</option>
+    <option value="rating">Popularity</option>
+    <option value="price-lth">Price : Low to High</option>
+    <option value="price-htl">Price : High to Low</option>
+    <option value="name-atz">Name : A to Z</option>
+    <option value="name-zta">Name : Z to A</option>
+  </select>
+</div>
+</div>
+
+
+<!-- ============================================sorting -Ends================================================= -->
+
+  <hr class="gradient-style" />
+  <div style="display: flex; width: 100%;">
+    <!-- Filter -->
+    <%-  include ("../partials/filter") %>
+      <!-- Contents -->
+      <div class="row pl-4 pr-4 productList">
+        <h1 id="not-found" style="display: none; padding-left: 10px;">No product found with given Filter !!!! </h1>
+        <% products.forEach((product, index)=> { %>
+          <div 
+              class="col-lg-3 col-md-4 col-sm-6 col-xs-12 product-index-box" 
+              cs-brand="<%= product.feature.brand %>" 
+              cs-color="<%= product.feature.color %>" 
+              cs-material="<%= product.feature.material %>" 
+              cs-suited-for="<%= product.feature.suitedFor %>" 
+              cs-category="<%= product.category.slug %>"
+              cs-size="<%= product.sizes.map(e=>e.stock>0?e.value:'-').join(' ').trim() %>"
+              cs-price="<%= product.price %>"
+              cs-score="<%= product.score %>"
+          >
+            <div class="single-product d-flex flex-column h-100">
+              <a class="title-link" href="http://localhost:8081/api/products/<%=product.category.slug%>/<%=product.productCode%>">
+                
+                <% if(product.imgs[0].substring(0,4)=='http'){%>
+                <img src="<%= product.imgs[0] %>" alt="Bag" class="img-fluid thumbnail" /></a>
+                <%}else{%>
+                  <img src="http://localhost:8081/inventoryservice/products/<%= product.imgs[0] %>" alt="Bag" class="img-fluid thumbnail" /></a>
+                  <%}%>
+
+              <div class="product-info">
+                <a class="title-link" href="http://localhost:8081/api/products/<%=product.category.slug%>/<%=product.productCode%>">
+                  <h6 class="mt-2 mb-2 productTitle">
+                    <%= product.title %>
+                  </h6>
+                </a>
+                <div style="display: flex; flex-direction: row; justify-content: space-around;">
+                  <div class="rating">
+                    <span style="font-family:Arial, Helvetica, sans-serif;">
+                      <%= product.avgRating %>&nbsp;
+                    </span>
+                    <div class="star-rating">
+                      <span class="star-rating__fill" style="width:<%= product.avgRating*20 %>%">
+                      </span>
+                    </div>
+                  </div>
+                  <div>
+                    <% if(product.offer>0){ %>
+                      <span class="float-right mr-3" style="color:#e9765b ;font-weight:500; font-size: 14px; font-family:Arial, Helvetica, sans-serif">(&nbsp;<%=product.offer%>%&nbsp;OFF)</span>
+                      <%}%>
+                      <br />
+                    <span class="price" style="font-size:16px;">Rs.&nbsp;<%= product.price %></span>
+                    <% if(product.offer>0){ %>
+                      <span style="color:rgb(137, 137, 137); font-size: 12px; text-decoration: line-through solid darkgrey;">Rs.&nbsp;<%=product.mrp%></span>
+                      <%}%>
+                  </div>
+                  
+                </div>
+  
+              </div>
+              <% if(product.available) {%>
+  
+  
+                <div style="display: flex; justify-content: center; padding:10px 25px 30px 25px;">
+                  <select id="selection<%= index %>" class="form-select form-select-sm sizeSelection "
+                    aria-label=".form-select-sm example">
+                    <% product.sizes.forEach(size=>{ %>
+                      <% if(size.stock>0){ %>
+                        <option selected value="<%= size.value %>">
+                          <%= size.value %>
+                        </option>
+                        <% }else{ %>
+                          <option disabled value="<%= size.value %>">
+                            <%= size.value %>
+                          </option>
+                          <% } %>
+                            <% }) %>
+                  </select>
+                  
+                  <% if(userAttributes.id == -1) {%>
+                    <a href="http://localhost:8081/api/user/authenticate"
+                      class="btn btn-block btn-secondary button-style mt-auto mb-2" id="<%= index %>"
+                      >
+                      Add to Cart
+                    </a>
+                  <%} else {%>
+                    <a href="http://localhost:8081/cart-service/add-to-cart/<%=product.productCode%>"
+                      class="btn btn-block btn-secondary button-style mt-auto mb-2" id="<%= index %>"
+                      onclick="make_uri(this.id, this.href)">
+                      Add to Cart
+                    </a>
+                  <%}%>
+                  
+  
+                </div>
+  
+  
+                <% } else { %>
+                  <a href="#" class="btn btn-block btn-danger button-style-danger mt-2 mb-2">
+                    Sold out
+                  </a>
+                  <%} %>
+            </div>
+          </div>
+          <% }) %>
+      </div>
+      <%} %>
+  </div>
+  
+  <script>
+    function make_uri(id, href) {
+
+      let selectionId = "#selection" + id;
+      let addCartId = "#" + id;
+
+      let size = $(selectionId).val()
+      let uri = href + '/' + size;
+      $(addCartId).attr('href', uri);
+      //  console.log(uri)
+    }
+  </script>
+  <script src="http://localhost:8081/api/javascripts/sort.js"></script>
+  <script src="http://localhost:8081/api/javascripts/filter.js"></script>
+  <%- include ("../partials/pagination") %>
+</div>
+<%- include ("../partials/footer") %>

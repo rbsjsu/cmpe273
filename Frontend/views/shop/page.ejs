@@ -1,0 +1,251 @@
+<%- include ("../partials/header") %> <%- include ("../partials/categories-navbar") %>
+
+<div class="container-fluid">
+  <!-- Flash messages -->
+  <% if(successMsg || errorMsg) {%>
+  <div class="row mt-3 mb-3">
+    <div class="col-md-12 m-auto">
+      <% if (successMsg) { %>
+      <div id="success" class="alert alert-success">
+        <%= successMsg %>
+      </div>
+      <% } else { %>
+      <div id="success" class="alert alert-success d-none"></div>
+      <% } %>
+    </div>
+    <div class="col-md-12 m-auto">
+      <% if (errorMsg) { %>
+      <div id="error" class="alert alert-danger">
+        <%= errorMsg %>
+      </div>
+      <% } else { %>
+      <div id="error" class="alert alert-danger d-none"></div>
+      <% } %>
+    </div>
+  </div>
+  <% } %>
+  <!-- Breadcrumbs -->
+  <div class="row mt-2">
+    <div class="col-md-12 m-auto">
+      <%if (breadcrumbs) { %>
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <% breadcrumbs.forEach(crumb => { if(!crumb.name.startsWith("?")){%>
+          <li class="breadcrumb-item" aria-current="page">
+            <a href="http://localhost:8081/api/<%=crumb.url%>"><%= crumb.name %></a>
+          </li>
+          <%}})%>
+        </ol>
+      </nav>
+      <%} %>
+    </div>
+  </div>
+  <!-- Page banner image -->
+
+  <% if(pageName == 'All Products') { %>
+  <div class="text-center hero-container">
+    <img
+      class="d-block w-100 hero-image"
+      src="http://localhost:8081/inventoryservice/banner/banner-all-products.jpg"
+    />
+    <div class="hero-text">
+      <h1><%=pageName%></h1>
+    </div>
+  </div>
+  <%} else {%> 
+  <div class="text-center hero-container">
+    <img
+      class="d-block w-100 hero-image"
+      src="http://localhost:8081/inventoryservice/banner/banner-<%=currentCategory.slug%>.jpg"
+    />
+    <div class="hero-text">
+      <h1><%=pageName%></h1>
+    </div>
+  </div>
+ <%}%>
+ <% if (subcategories.length>0) { %>
+  <hr class="gradient-style" />
+
+<!-- Store's categories section -->
+<div class="container">
+    <h3 class="text-center mb-3 mt-4">Shop By Categories</h3>
+   
+    <div class="row text-center m-auto">
+      <% subcategories.forEach((subcategory,i)=>{ %>
+      <div class="col-lg-3 col-md-3 col-sm-12 text-center ml-2">
+        <a class="title-link" href="http://localhost:8081/api/products/<%=subcategory.slug%>">
+          <img src="http://localhost:8081/inventoryservice/category/<%=subcategory.img%>" alt="category" class="circle-img" />
+          <h4 class="mb-3 mt-3"><%=subcategory.title%></h4>
+        </a>
+      </div>
+      <%}) %>
+      <div class="col-lg-1 col-md-1 col-sm-12 text-center mx-auto">
+        <a href="http://localhost:8081/api/products">
+          <i class="fa fa-chevron-circle-right" aria-hidden="true"></i>
+        </a>
+      </div>
+    </div>
+   
+  </div>
+  <%}%>
+  
+  
+  <hr class="gradient-style" />
+  <!--  start of carosoul  -->
+
+  <div class="container mb-4 mt-4">
+    <!--Carousel Wrapper-->
+    <div
+      id="products-carousel"
+      class="carousel slide carousel-multi-item"
+      data-ride="carousel"
+    >
+      <!--Controls-->
+      <div class="controls-top mb-2">
+        <div class="row">
+          <div class="col-8">
+            <h3>Latest Products</h3>
+          </div>
+          <div class="col-4">
+            <div class="controls float-right hidden-xs">
+              <a
+                class="left fa fa-chevron-left btn btn"
+                href="#products-carousel"
+                data-slide="prev"
+              ></a
+              ><a
+                class="right fa fa-chevron-right btn"
+                href="#products-carousel"
+                data-slide="next"
+              ></a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--/.Controls-->
+  
+      <!--Slides-->
+      <div class="carousel-inner" role="listbox">
+        <!--First slide-->
+        <% for(let n=0; n<Math.floor(products.length/3); n++){ %>
+            <% if(n==0){ %>
+                <div class="carousel-item active">
+           <% }else{ %>
+                <div class="carousel-item">
+            <%}%>
+           
+                <div class="row">
+                  <% for(let i=n*3; i<n*3+3; i++) { %>
+                  <div class="col-md-4 product-index-box">
+                    <div class="single-product d-flex flex-column h-100">
+                      <a
+                        class="title-link"
+                        href="http://localhost:8081/api/products/<%=products[i].category.slug%>/<%=products[i].productCode%>"
+                      >
+                      <% if(products[i].imgs[0].substring(0,4)=='http'){%>
+                        <img
+                          src="<%= products[i].imgs[0] %>"
+                          alt="Bag"
+                          class="img-fluid thumbnail"
+                      /></a>  
+                        <%}else{%>
+                        <img
+                          src="http://localhost:8081/inventoryservice/products/<%= products[i].imgs[0] %>"
+                          alt="Bag"
+                          class="img-fluid thumbnail"
+                      /></a>  
+                      <%}%>
+                      
+                      <div class="product-info">
+                        <a
+                          class="title-link"
+                          href="http://localhost:8081/api/products/<%=products[i].category.slug%>/<%=products[i].productCode%>"
+                        >
+                          <h6 class="mt-2 mb-2"><%= products[i].title %></h6></a
+                        >
+                        <div style="display: flex; flex-direction: row; justify-content: space-around;">
+                          <div class="rating">
+                           <span style="font-family:Arial, Helvetica, sans-serif;"> <%= products[i].avgRating %>&nbsp;</span>
+                            <div class="star-rating">
+                             <span class="star-rating__fill" style="width:<%= products[i].avgRating*20 %>%">
+                              </span>
+                            </div>
+                          </div>
+                          <div class="price">Rs.&nbsp;<%= products[i].price %>
+                          </div>
+                        </div>
+                        
+                      </div>
+                      <% if(products[i].available) {%>
+                      
+
+                        <div style="display: flex; justify-content: center; padding:10px 25px 30px 25px;">
+                            <select id="selection<%= i %>" class="form-select form-select-sm sizeSelection "
+                                aria-label=".form-select-sm example">
+                                <% products[i].sizes.forEach(size=>{ %>
+                                    <% if(size.stock>0){ %>
+                                        <option selected value="<%= size.value %>">
+                                            <%= size.value %>
+                                        </option>
+                                        <% }else{ %>
+                                            <option disabled value="<%= size.value %>">
+                                                <%= size.value %>
+                                            </option>
+                                            <% } %>
+                                                <% }) %>
+                            </select>
+                            
+                            <%if(userAttributes.id == -1) {%>
+                              <a href="http://localhost:8081/api/user/authenticate" class="btn btn-block btn-secondary button-style mt-auto mb-2"
+                                >
+                                Add to Cart
+                              </a>  
+                            <%} else {%>
+                              <a href="http://localhost:8081/cart-service/add-to-cart/<%=products[i].productCode%>" class="btn btn-block btn-secondary button-style mt-auto mb-2"
+                                id="<%= i %>" onclick="make_uri(this.id, this.href)">
+                                Add to Cart
+                            </a>
+                            <%}%>
+
+                            
+                        
+                        </div>
+
+
+                      <% } else { %>
+                      <a
+                        href="#"
+                        class="btn btn-block btn-danger button-style-danger mt-2 mb-2"
+                      >
+                        Sold out
+                      </a>
+                      <%} %>
+                    </div>
+                  </div>
+                  <%}%>
+                </div>
+              </div>
+       <% } %>
+      </div>
+      <!--/.Slides-->
+    </div>
+    <!--/.Carousel Wrapper-->
+  </div>
+
+  <!-- end of carosoule -->
+  <script>
+  function make_uri(id, href){
+
+   let selectionId = "#selection"+id;
+  let addCartId = "#"+id;
+  // let size = document.getElementById(selectionId).value;
+  let size = $(selectionId).val()
+   let uri = href+'/'+size;
+   $(addCartId).attr('href',uri);
+  //  console.log(uri)
+  }
+  </script>
+
+  <%- include ("../partials/pagination") %>
+</div>
+<%- include ("../partials/footer") %>

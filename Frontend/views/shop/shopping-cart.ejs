@@ -1,0 +1,135 @@
+<%- include ("../partials/header") %> <%- include ("../partials/categories-navbar") %>
+<div class="container cart">
+  <% if (cart != null && !cart.paid ) { %>
+  <div class="row">
+    <div class="col-md-11 col-sm-12 m-auto table-responsive">
+      <table class="table text-center">
+        <thead>
+          <tr >
+            <th>Product</th>
+            <th>&nbsp;</th>
+            <th>&nbsp;</th>
+            <th>Quantity</th>
+            <th>&nbsp;</th>
+            <th>Total</th>
+            <th>Subtotal</th>
+            <th>&nbsp;</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% products.forEach( product => { %> <% if(product != null) {%>
+          <tr class="my-auto">
+            <td>
+              <a
+              href="/products/<%=product.category.slug%>/<%=product._id%>"
+            >
+              <img src="<%=product.imagePath%>" class="img-small image-fluid" alt="image thumbnail" />
+              </a>
+            </td>
+            <td>
+              <div class="float-left mb-3">
+                <a class="title-link"
+                href="/products/<%=product.category.slug%>/<%=product._id%>"
+              >
+                <h6 class="text-left"><%= product.title %></h6> 
+                <p class="text-left" style="font-size:medium">Size: <%= product.size %></p>
+                <p class="text-left">Product No: <%= product.productCode %></p>
+                
+              </div>
+              
+              </a>
+            </td>
+            <td class="text-center">
+              <a href="/add-to-cart/<%=product.productCode%>/<%=product.size%>"
+                ><i class="fa fa-plus-square" aria-hidden="true"></i
+              > </a>
+            </td>
+            <td class="text-center">
+              <p class="qty-display pt-1">
+              <%= product.qty %>
+            </p>
+          </td>
+            <td class="text-center" >
+              <a href="/reduce/<%=product.productCode%>/<%=product.size%>"
+                ><i class="fa fa-minus-square" aria-hidden="true"></i
+              ></a>
+            </td>
+            <td>$<%= product.price %></td>
+            <td>$<%= product.totalPrice %></td>
+            <td>
+              <a
+                href="/removeAll/<%=product.productCode%>/<%=product.size%>"
+                class="btn btn-danger btn-sm button-style-danger"
+                >Remove all</a
+              >
+            </td>
+          </tr>
+          <% } %> <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+<hr>
+<!-- THE ADDRESS SELECTION PART-->
+
+<div class="container row address" style="display: flex; flex-direction: column;">
+  <h3>Select Appropriate Address:</h3></br>
+  <!--
+  <% for(var i = 0; i < addresses.length ; i++) { %>
+  <label class=" border-primary custom_card_radio">
+    <input type="radio" name="address" class="card border-primary custom_radio" value="<% addresses[i].addressId %>"/>
+    <div>
+      <div class="card-header card-title"> Address <%= i+1 %> </div>
+      <div class="card-body">
+        <p class="card-text "> <%= addresses[i].firstLine + " " + addresses[i].secondLine + " " + addresses[i].thirdLine %> </p>
+        <p class="card-text"> <%= addresses[i].cityName  %> </p>
+        <p class="card-text"> <%= addresses[i].pincode %> </p>
+      </div>
+    </div>
+    </label>
+  <% } %>
+  -->
+
+  <% for(var i = 0; i < addresses.length ; i++) { %>
+    <label class="col-8">
+      <input type="radio" name="addressId" class="card-input-element d-none" id="<%= addresses[i].addressId.toString() %>" value="<%= addresses[i].addressId.toString() %>">
+      <div class="card card-body bg-light text-left">
+        <p class="card-text "> <%= addresses[i].firstLine + ", " + addresses[i].secondLine + ", " + addresses[i].thirdLine %> </p>
+        <p class="card-text"> <%= addresses[i].cityName  %> </p>
+        <p class="card-text"> <%= addresses[i].pincode %> </p>
+      </div>
+    </label>
+  <% } %>
+
+</div>
+
+<!-- ADD ADDREDD BUTTON -->
+<div class="row mt-2 mr-auto">
+  <div class="col-md-11 col-sm-12 m-auto">
+    <a href="/user/my-addresses" class="btn btn-dark button-style">Add Address</a>
+  </div>
+</div>
+
+
+<hr>
+  <div class="row mt-4 mr-auto">
+    <div class="col-md-11 col-sm-12 m-auto">
+      <strong>Total: &#36; <%= cart.totalCost %> </strong>
+    </div>
+  </div>
+  <div class="row mt-2 mr-auto">
+    <div class="col-md-11 col-sm-12 m-auto">
+      <a href="/checkout" class="btn btn-dark button-style">Checkout</a>
+    </div>
+  </div>
+  <% } else { %>
+  <div class="row text-center">
+    <div class="col-md-9 col-sm-9 m-auto">
+      <h2>No items in the cart</h2>
+    </div>
+  </div>
+
+  <% } %>
+</div>
+
+<%- include ("../partials/footer") %>

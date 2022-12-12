@@ -1,0 +1,423 @@
+<%- include ("../partials/header") %> <%- include ("../partials/categories-navbar") %>
+<body>
+  <div id="container">
+    <!--sidebar start-->
+    <div id="sidebar" class="nav-collapse">
+      <!-- sidebar menu start-->
+      <ul class="sidebar-menu" id="nav-accordion">
+        <li class="mt">
+          <a href="./my-profile">
+            <i class="fa fa-user"></i>
+            <span>Account & Information</span>
+          </a>
+        </li>
+        <li class="mt">
+          <a href="./my-addresses">
+            <i class="fa fa-map-marker"></i>
+            <span>My Addresses</span>
+          </a>
+        </li>
+        <li class="mt">
+          <a class="active" href="#">
+            <i class="fa fa-book"></i>
+            <span>My Orders</span>
+          </a>
+        </li>
+        <li class="mt">
+          <a href="./change-password">
+            <i class="fa fa-unlock-alt"></i>
+            <span>Change Password</span>
+          </a>
+        </li>
+        <li class="mt">
+          <a  href="./become-seller">
+            <i class="fa fa-inr"></i>
+            <span>Become Seller</span>
+          </a>
+        </li>
+        <li class="mt">
+          <a href="#">
+            <i class="fa fa-power-off"></i>
+            <span>Logout</span>
+          </a>
+        </li>
+      </ul>
+      <!-- sidebar menu end-->
+    </div>
+    <!--main content start-->
+    <div id="main-content" class="col-md-6">
+      <h3><i class="fa fa-angle-right"></i> My Orders</h3>
+      <!-- order cards -->
+      <% for(var i = 0; i < orders.length ; i++) { %>
+        <div class="card flex-row  border-primary mb-3">
+            <div class="card-header border-0 d-flex justify-content-around mr-3"> 
+              <% if(orders[i].imageLink && orders[i].imageLink.substring(0,4)=='http'){%>
+                <img src="<%= orders[i].imageLink %>" class="mt-auto mb-auto" alt="Insert Image" style="max-width:300px; height: min-content;" > 
+                <%}else{%>
+                  <img src="http://localhost:8081/inventoryservice/products/<%= orders[i].imageLink %>" class="mt-auto mb-auto" alt="Insert Image" style="max-width:300px; height: min-content;"  > 
+                  <%}%>
+             
+            </div>
+            <div class="card-body px-2 ">
+                <h5 class="card-title">#Order ID :<%= orders[i].orderIdInteger %></h5>
+                <p class="card-text">Receipt Id : <%= orders[i].receiptIdString%></p>
+                <p class="card-text">Product Name : <%= orders[i].productTitle%></p>
+                <p class="card-text">Size: <%= orders[i].sizeString%></p>
+                <p class="card-text">Quantity Bought : <%= orders[i].quantityBoughtInteger %></p>
+                <p class="card-text">Total Bill:Rs. <%= orders[i].billAmountDouble %></p>
+                <p class="card-text">Date of Purchase : <%= orders[i].dateOfPurchaseDate %></p>
+                <p class="card-text">Date of delivery : <%= orders[i].dateOfDeliverDate %></p>
+                <p class="card-text">Order Status : <%= orders[i].orderStatus %></p>
+               <p class="card-text">
+                 <% if(orders[i].orderStatus !== 'DELIVERED' && orders[i].orderStatus !== 'CANCELLED') {%>
+                  <a class="card-link btn btn-danger float-right mr-1" href="http://localhost:8081/order-service/cancel/<%=orders[i].orderIdInteger%>">Cancel Order</a>
+                  <% } %>
+              </p>
+               <br><br>
+     
+
+<% if(orders[i].review){%>
+        <!-- view Review -->
+        <button class="btn btn-success float-right review-view-button" 
+          type="button" data-toggle="modal"
+          data-target="#review-modal" 
+          re-order-id="<%= orders[i].orderIdInteger %>" 
+          re-product-code="<%= orders[i].productIdInteger%>"
+          re-product-name="<%= orders[i].productTitle%>"
+          <% if( orders[i].imageLink &&  orders[i].imageLink.substring(0,4)=='http'){%>
+            re-img-uri="<%= orders[i].imageLink %>" 
+          <%}else{%>
+            re-img-uri="http://localhost:8081/inventoryservice/products/<%= orders[i].imageLink %>" 
+          <%}%>
+
+          re-price="<%= orders[i].billAmountDouble %>"
+          re-brand="<%= orders[i].brand %>"
+          re-color="<%= orders[i].color %>"
+           
+          re-rating="<%= orders[i].review.rating %>" 
+          re-text="<%= orders[i].review.reviewText %>">
+          View Review
+        </button>
+<%}else{%>
+             <!-- view Review -->
+        <button class="btn btn-success d-none float-right review-view-button" 
+        type="button" data-toggle="modal"
+        data-target="#review-modal" 
+        re-order-id="<%= orders[i].orderIdInteger %>" 
+        re-product-code="<%= orders[i].productIdInteger%>"
+        re-product-name="<%= orders[i].productTitle%>"
+        <% if( orders[i].imageLink &&  orders[i].imageLink.substring(0,4)=='http'){%>
+            re-img-uri="<%= orders[i].imageLink %>" 
+          <%}else{%>
+            re-img-uri="http://localhost:8081/inventoryservice/products/<%= orders[i].imageLink %>" 
+          <%}%>
+
+        re-price="<%= orders[i].billAmountDouble %>"
+        re-brand="<%= orders[i].brand %>"
+        re-color="<%= orders[i].color %>"
+         
+        re-rating="0" 
+        re-text="">
+        View Review
+      </button>
+<%}%>
+
+<% if(orders[i].review){%>
+       <!-- delete review -->
+       <button class="btn btn-danger float-right review-delete-button mr-2"
+       type="button" 
+     re-id="<%=orders[i].review.id%>"
+     re-order-id="<%=orders[i].orderIdInteger%>">
+     Delete Review
+   </button>
+<%}else{%>
+        <!-- delete review -->
+        <button class="btn btn-danger float-right d-none review-delete-button mr-2"
+          type="button" 
+        re-id=""
+        re-order-id="<%=orders[i].orderIdInteger%>">
+        Delete Review
+      </button>
+<%}%>
+
+<% if(orders[i].review){%>
+          <!-- write Review -->
+          <button       
+            class="btn btn-primary d-none float-right review-write-button"                      
+          type="button" data-toggle="modal"
+            data-target="#review-modal" 
+            re-order-id="<%=orders[i].orderIdInteger%>" 
+            re-product-code="<%= orders[i].productIdInteger%>"
+            re-product-name="<%= orders[i].productTitle%>"
+            <% if( orders[i].imageLink &&  orders[i].imageLink.substring(0,4)=='http'){%>
+              re-img-uri="<%= orders[i].imageLink %>" 
+            <%}else{%>
+              re-img-uri="http://localhost:8081/inventoryservice/products/<%= orders[i].imageLink %>" 
+            <%}%> 
+            re-price="<%= orders[i].billAmountDouble %>"
+            re-brand="<%= orders[i].brand %>"
+            re-color="<%= orders[i].color %>" 
+            >
+            Write Review
+          </button>
+        
+<%}else if(orders[i].orderStatus !== 'CANCELLED'){%>
+            <!-- write Review -->
+          <button       
+          class="btn btn-primary float-right review-write-button"                      
+        type="button" data-toggle="modal"
+          data-target="#review-modal" 
+          re-order-id="<%=orders[i].orderIdInteger%>" 
+          re-product-code="<%= orders[i].productIdInteger%>"
+          re-product-name="<%= orders[i].productTitle%>"
+          <% if( orders[i].imageLink &&  orders[i].imageLink.substring(0,4)=='http'){%>
+            re-img-uri="<%= orders[i].imageLink %>" 
+          <%}else{%>
+            re-img-uri="http://localhost:8081/inventoryservice/products/<%= orders[i].imageLink %>" 
+          <%}%>         
+          re-price="<%= orders[i].billAmountDouble %>"
+          re-brand="<%= orders[i].brand %>"
+          re-color="<%= orders[i].color %>" 
+          >
+          Write Review
+        </button>
+<%}%>
+
+            </div>
+        </div>
+        <% } %>
+         
+        
+    </div>
+  </div>
+
+  <!--  REVIEW MODEL -->
+  <div class="modal fade" id="review-modal" tabindex="-1" role="dialog" aria-labelledby="write-review" aria-hidden="true">
+    <div class="modal-dialog  modal-dialog-centered modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Review</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+
+          <form id="review-form" action="http://localhost:9009/add/review" method="POST">
+
+            <div class="form-group d-flex details">
+              <img class="img-thumbnail mr-3" src="https://storage.needpix.com/rsynced_images/backpack-2634622_1280.jpg"
+                alt="backpack image" style=" width:200px; box-shadow: 0px 0px 10px 3px #0000003a;">
+              <div class=" mt-4">
+                <div class="form-group">
+                  <span><strong>Order Id </strong>: <span id="review-order-id"></span></span>
+                  <input type="text" hidden name="orderId" value="" />
+                </div>
+                <div class="form-group">
+                  <span><strong>Product Name </strong>: <span id="review-product-name"></span></span>
+                </div>
+                <div class="form-group">
+                  <span><strong>Price </strong>: Rs. <span id="review-price"></span></span>
+                </div>
+                <div class="form-group">
+                  <span><strong>Color </strong>: <span id="review-color-dot" class="dot"></span>&nbsp;<span id="review-color-text"></span></span>
+                </div>
+                <div class="form-group">
+                  <span><strong>Brand </strong>: <span id="review-brand"></span></span>
+                </div>
+                <div class="form-group">
+                  <span><strong>Product Code </strong>: <span id="review-product-code">2343-2342-234234</span></span>
+                </div>
+              </div>
+            </div>
+  
+            <div class="form-group">
+              <p style="font-size:large; font-weight: 500; margin-top: 30px;">Rate : </p>
+              <div class="stars">
+                
+                  <input class="star star-5" id="star-5" type="radio" name="star" value="5" />
+                  <label class="star star-5" for="star-5"> </label>
+  
+                  <input class="star star-4" id="star-4" type="radio" name="star" value="4" />
+                  <label class="star star-4" for="star-4"> </label>
+  
+                  <input class="star star-3" id="star-3" type="radio" name="star" value="3" />
+                  <label class="star star-3" for="star-3"> </label>
+  
+                  <input class="star star-2" id="star-2" type="radio" name="star" value="2" />
+                  <label class="star star-2" for="star-2"> </label>
+  
+                  <input class="star star-1" id="star-1" type="radio" name="star" value="1" />
+                  <label class="star star-1" for="star-1"> </label>
+                
+              </div>
+              <p id="error-rating"
+                style="font-size:small; font-weight: 500; margin-left: 10px; color:rgba(255, 0, 0, 0.699) ;display:none">
+                *Please rate product before submit. </p>
+  
+            </div>
+            
+
+            <div class="form-group">
+              <label for="review-text" style="font-size:large; font-weight: 500;">Describe in Details</label>
+              <textarea class="form-control" id="review-text" rows="4" placeholder="Write your review here..."></textarea>
+  
+            </div>
+          </form>
+        
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+          <button type="button" id="save-review" class="btn btn-primary">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <script>
+   
+    // action perform on submit review
+    $("#save-review").click(async function () {
+        let rating = $("#review-form input[type='radio']:checked").val();
+        if (!rating) {
+          $("#error-rating").show("fast");
+        }
+        else {
+          let reviewText = $("#review-text").val();
+
+          let reviewobj = {
+            orderId: $("#review-order-id").text(),
+            rating,
+            reviewText,
+            productCode:$("#review-product-code").text(),
+            jwtString:document.cookie.substring(document.cookie.indexOf('authCookie')).split("=")[1]
+          }
+
+      
+          // save/update the review using post method and get review id
+          console.log("POST : create review and generate review id");
+        //  $("#review-form").trigger("submit");
+// ***********************************
+            // console.log(document.cookie);
+             let response=   await fetch("http://localhost:9009/add/review", {
+
+                    // Adding method type
+                    method: "POST",
+
+                    // Adding body or contents to send
+                    body: JSON.stringify(reviewobj),
+
+                    // Adding headers to the request
+                    headers: {
+                      "Content-type": "application/json; charset=UTF-8",
+                    },
+
+                   
+                  }).then(response => response.json())
+
+                  //  console.log(response)
+// ***********************************
+
+          // console.log(reviewobj);
+          let reviewId = response.id; 
+
+          //change the button to view review
+          let w = $(".review-write-button[re-order-id="+reviewobj.orderId+"]");
+          let v = $(".review-view-button[re-order-id="+reviewobj.orderId+"]");
+          let d = $(".review-delete-button[re-order-id="+reviewobj.orderId+"]");
+         
+          w.addClass("d-none");
+          v.removeClass("d-none");
+          d.removeClass("d-none");
+          
+          
+          
+          // // set rating informations in the attributes of view and delete review button
+          v.attr("re-rating", reviewobj.rating);
+          v.attr("re-text",reviewobj.reviewText);
+          v.attr("re-id", reviewId);
+          d.attr("re-id", reviewId);
+
+          
+
+         // console.log(reviewobj);
+        }
+
+      });
+
+      //delete review 
+      $(".review-delete-button").click(function(){
+
+        let orderId = $(this).attr("re-order-id");
+        let reviewId = $(this).attr("re-id")
+        // console.log(reviewId)
+        // console.log(orderId);
+        // delete the review using id
+        $.get("http://localhost:9009/review/delete?id="+reviewId);
+          console.log("Delete : using reviewId")
+        // reset the buttons
+        let v = $(".review-view-button[re-order-id="+orderId+"]")
+        // console.log(v);
+       let d = $(this)
+         let w = $(".review-write-button[re-order-id=" + orderId + "]")
+        // console.log(w);
+        w.removeClass("d-none");
+        d.addClass("d-none");
+        v.addClass("d-none");
+
+         //delete info in view button
+        v.removeAttr("re-rating");
+        v.removeAttr("re-text");
+
+      })
+
+       // Reset modal after close
+    $('#review-modal').on('hidden.bs.modal', function () {
+      $(this).find('form').trigger('reset');
+      $(this).find('textarea').val("")
+    })
+
+    // Error for empty rating
+    $("#review-form input[type='radio']").change(() => {
+      $("#error-rating").hide("fast");
+      $("#save-review").attr("data-dismiss","modal");
+    })
+
+
+      //  initialize popup on write button
+      $(".review-write-button").click(function () {
+        let e = $(this)
+        $("#review-order-id").text(e.attr("re-order-id"))
+        $("#review-product-name").text(e.attr("re-product-name"))
+        $("#review-price").text(e.attr("re-price"))
+        $("#review-color-text").text(e.attr("re-color"))
+        $("#review-color-dot").css("background-color", e.attr("re-color"))
+        $("#review-brand").text(e.attr("re-brand"))
+        $("#review-product-code").text(e.attr("re-product-code"))
+        $("#review-form img").prop("src", e.attr("re-img-uri"))
+       $('input[name="orderId"]').attr('value',e.attr("re-order-id"))
+      })
+
+      // initialize popup on view button
+      $(".review-view-button").click(function () {
+        let e = $(this)
+        let rating = e.attr("re-rating");
+
+        $("#review-order-id").text(e.attr("re-order-id"))
+        $("#review-product-name").text(e.attr("re-product-name"))
+        $("#review-price").text(e.attr("re-price"))
+        $("#review-color-text").text(e.attr("re-color"))
+        $("#review-color-dot").css("background-color", e.attr("re-color"))
+        $("#review-brand").text(e.attr("re-brand"))
+        $("#review-product-code").text(e.attr("re-product-code"))
+        $("#review-form img").prop("src", e.attr("re-img-uri"))
+        $("#star-"+rating).prop("checked",true);
+        $("#review-text").val(e.attr("re-text"))
+        $('input[name="orderId"]').attr("value",e.attr("re-order-id"))
+       
+      })
+    
+  </script>
+</body>

@@ -1,0 +1,140 @@
+<%- include ("../partials/header") %> <%- include ("../partials/categories-navbar") %>
+
+<div class="container cart">
+    <% if (userAttributes.id == -1) { %>
+        <div class="row text-center ">
+            <div class="col-md-9 m-auto">
+                <h2>You must <a href="http://localhost:8081/api/user/authenticate" style="color:cornflowerblue">login</a> before accessing the cart! </h2>
+            </div>
+        </div>
+    <% } else if(userAttributes.cartSize == 0) { %>
+        <div class="row text-center ">
+            <div class="col-md-9 m-auto">
+                <h2>No items in the cart!</h2>
+            </div>
+        </div>
+    <% } else { %>
+        <div class="row">
+            <% if(queryObject.operation == "added"){ %>
+                <div class="alert alert-success col-md-11 col-sm-12 m-auto" role="alert">Product Added to cart!</div>
+            <%} else if(queryObject.operation == "removeOne") {%>
+                <div class="alert alert-danger col-md-11 col-sm-12 m-auto" role="alert">Product Removed to cart!</div>
+            <%} else if(queryObject.operation == "removeAll") { %>
+                <div class="alert alert-danger col-md-11 col-sm-12 m-auto" role="alert">Product Removed to cart!</div>
+            <%}%>
+            <div class="col-md-11 col-sm-12 m-auto table-responsive">
+              <table class="table text-center">
+                <thead>
+                  <tr >
+                    <th>Product</th>
+                    <th>&nbsp;</th>
+                    <th>&nbsp;</th>
+                    <th>Quantity</th>
+                    <th>&nbsp;</th>
+                    <th>Total</th>
+                    <th>Subtotal</th>
+                    <th>&nbsp;</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% products.forEach( product => { %> <% if(product != null) {%>
+                  <tr class="my-auto">
+                    <td>
+                        <!--INCLUDE PROPER PRODUCT DETAIL PAGE LINK-->
+                      <a
+                      href="http://localhost:8081/api/products/<%=product.category.slug%>/<%=product.productCode%>"
+                    >
+                    <% if(product.imgs[0].substring(0,4)=='http'){%>
+                      <img src="<%=product.imgs[0]%>" class="img-small image-fluid" alt="image thumbnail" />
+                      <%}else{%>
+                        <img src="http://localhost:8081/inventoryservice/products/<%=product.imgs[0]%>" class="img-small image-fluid" alt="image thumbnail" />
+                        <%}%>
+                     
+                      </a>
+                    </td>
+                    <td>
+                      <div class="float-left mb-3">
+                        <a class="title-link"
+                        href="http://localhost:8081/api/products/<%=product.category.slug%>/<%=product.productCode%>"
+                      >
+                        <h6 class="text-left"><%= product.title %></h6> 
+                        <p class="text-left" style="font-size:medium">Size: <%= product.sizeString %></p>
+                        <p class="text-left">Product No: <%= product.productCode %></p>
+                        
+                      </div>
+                      
+                      </a>
+                    </td>
+                    <td class="text-center">
+                      <a href="http://localhost:8081/cart-service/add-to-cart/<%=product.productCode%>/<%=product.sizeString%>"
+                        ><i class="fa fa-plus-square" aria-hidden="true"></i
+                      > </a>
+                    </td>
+                    <td class="text-center">
+                      <p class="qty-display pt-1">
+                      <%= product.quantityBought %>
+                    </p>
+                  </td>
+                    <td class="text-center" >
+                      <a href="http://localhost:8081/cart-service/remove-one-from-cart/<%=product.productCode%>/<%=product.sizeString%>"
+                        ><i class="fa fa-minus-square" aria-hidden="true"></i
+                      ></a>
+                    </td>
+                    <td>$<%= product.price %></td>
+                    <td>$<%= product.price * product.quantityBought %></td>
+                    <% totalBill += (product.price * product.quantityBought) %>
+                    <td>
+                      <a
+                        href="http://localhost:8081/cart-service/remove-all-from-cart/<%=product.productCode%>/<%=product.sizeString%>"
+                        class="btn btn-danger btn-sm button-style-danger"
+                        >Remove all</a
+                      >
+                    </td>
+                  </tr>
+                  <% } %> <% }) %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="row container address d-flex flex-column" id="addresses">
+            <h3>Select Appropriate Address:</h3></br>
+            <% for(var i = 0; i < addresses.length ; i++) { %>
+                <label class="col-8">
+                    <% if (i == 0) { %>
+                        <input type="radio" name="addressId" class="card-input-element d-none" id="<%= addresses[i].addressIdInteger.toString() %>" value="<%= addresses[i].addressIdInteger.toString() %>" checked>
+                    <% } else { %>
+                        <input type="radio" name="addressId" class="card-input-element d-none" id="<%= addresses[i].addressIdInteger.toString() %>" value="<%= addresses[i].addressIdInteger.toString() %>">
+                    <% } %>
+                  <div class="card card-body bg-light text-left">
+                    <p class="card-text "> <%= addresses[i].firstLineString + ", " + addresses[i].secondLineString + ", " + addresses[i].thirdLineString %> </p>
+                    <p class="card-text"> <%= addresses[i].cityNameString  %> </p>
+                    <p class="card-text"> <%= addresses[i].pincodeString %> </p>
+                  </div>
+                </label>
+              <% } %>
+          </div>
+          <div class="row mt-2 mr-auto">
+            <div class="col-md-11 col-sm-12 m-auto">
+              <a href="http://localhost:8081/api/user/my-addresses" class="btn btn-dark button-style">Add Address</a>
+            </div>
+          </div>
+          <hr/>
+          <div class="row mt-4 mr-auto">
+            <div class="col-md-11 col-sm-12 m-auto">
+              <strong>Total: &#36;<%= totalBill %> </strong>
+            </div>
+          </div>
+          <div class="row mt-2 mr-auto">
+            <div class="col-md-11 col-sm-12 m-auto">
+              <a id="checkout" href="http://localhost:8081/api/cart-service/checkout?addressId="+ class="btn btn-dark button-style" >Checkout</a>
+            </div>
+          </div>
+
+
+    <% } %>
+</div>
+
+<script src="http://localhost:8081/api/javascripts/checkout.js">
+  
+</script>

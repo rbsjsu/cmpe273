@@ -1,0 +1,363 @@
+<%- include ("../partials/header") %>  <%- include ("../partials/categories-navbar") %>
+<div class="container"  >
+  <!-- Flash messages -->
+  <div class="row mt-3 mb-3">
+    <div class="col-md-12 m-auto">
+      <% if (successMsg) { %>
+      <div id="success" class="alert alert-success">
+        <%= successMsg %>
+      </div>
+      <% } else { %>
+      <div id="success" class="alert alert-success d-none"></div>
+      <% } %>
+    </div>
+    <div class="col-md-12 m-auto">
+      <% if (errorMsg) { %>
+      <div id="error" class="alert alert-danger">
+        <%= errorMsg %>
+      </div>
+      <% } else { %>
+      <div id="error" class="alert alert-danger d-none"></div>
+      <% } %>
+    </div>
+  </div>
+  <!-- Product info -->
+  <div class="row mt-4 mb-4" >
+    <div class="d-flex mt-2 mr-4 ml-0" style="max-height: 800px; justify-content: space-between;">
+      <div id="gallery" class="mr-3 d-flex">
+        <% product.imgs.forEach((img,index)=>{%>
+          <% if(img.substring(0,4)=='http' ){%>
+            <% if(index==0){%>
+              <img class="img-thumbnail" selected src="<%=img%>" alt="product Image">
+            <% }else if(6>index){%>
+                <img class="img-thumbnail" src="<%=img%>" alt="product Image">
+            <% }%>
+          <%}else{%>
+            <% if(index==0){%>
+                      <img class="img-thumbnail" selected src="http://localhost:8081/inventoryservice/products/<%=img%>"
+                        alt="product Image">
+            <% }else if(6>index){%>
+                        <img class="img-thumbnail" src="http://localhost:8081/inventoryservice/products/<%=img%>"
+                          alt="product Image">
+            <% }%>
+          <%}%>
+          
+      <%  })%>
+             
+    </div>
+    <div> 
+      <% if(product.imgs[0].substring(0,4)=='http'){%>
+        <img
+        src="<%=product.imgs[0]%>"
+        xoriginal="<%=product.imgs[0]%>"
+        class="product-img xzoom"
+        alt="product image"
+      />
+        <%}else{%>
+          <img
+          src="http://localhost:8081/inventoryservice/products/<%=product.imgs[0]%>"
+          xoriginal="<%=product.imgs[0]%>"
+          class="product-img xzoom"
+          alt="product image"
+        />
+          <%}%>
+        
+  </div>
+  
+ 
+    </div>
+    <div class="col-md-5 mt-2 mb-2 ml-2 mr-auto text-dark">
+      <h2 style="margin-bottom: 0px;"><%=product.title%></h2>
+      <div class="rating reviewrating">
+        <span style="font-size:medium; font-weight: 600;"> <%=product.avgRating%>&nbsp;</span>
+        <div class="star-rating" style="font-size: 25px;">
+          <span class="star-rating__fill" style="width:<%= product.avgRating*20 %>%">
+          </span>
+        </div>
+      </div>
+
+      <hr />
+      <div>
+        <span class="price">Rs.&nbsp;<%=product.price%></span>&nbsp; 
+        <% if(product.offer>0){ %>
+        <span style="color:rgb(137, 137, 137); font-size: 17px; text-decoration: line-through solid darkgrey;">Rs.&nbsp;<%=product.mrp%></span>
+        <span class="price" style="color:#e9765b ;font-weight:500; font-size: 18px; font-family:Arial, Helvetica, sans-serif">(&nbsp;<%=product.offer%>%&nbsp;OFF)</span>
+        <%}%>
+      </div>
+      <br />
+      <p class="lead"> <strong>Description: </strong>
+        <p><%=product.shortDescription%></p>
+      </p>
+      
+      <p><strong>Category:</strong> <%=product.category.title%></p>
+      <p><strong>Features:</strong>
+        <% if(product.feature.brand){%>
+          <p class="ml-5"><strong>Brand: </strong><%=product.feature.brand%></p>
+          <%} %>
+      
+        <% if(product.feature.color){%>
+          <p class="ml-5"><strong>Color: </strong></p><span class="dot ml-5" style=" width: 40px; height: 40px; margin-bottom: 5px; background-color:<%=product.feature.color%>;"></span>
+          <%} %>
+        <% if(product.feature.material){%>
+          <p class="ml-5"><strong>Material: </strong><%=product.feature.material%></p>
+          <%} %>
+        <% if(product.feature.suitedFor){%>
+          <p class="ml-5"><strong>Suited For: </strong><%=product.feature.suitedFor%></p>
+          <%} %>
+      </p>
+     
+      <p><strong>Seller: </strong><%=product.manufacturer.companyName%></p>
+      <p><strong>Product code:</strong> <span id="productCode"><%=product.productCode%></span></p>
+      <p><strong>Date added to the store:</strong> <%= moment(product.createdAt).format( 'MMMM Do YYYY')%></p>
+      
+<!-- ---------------------Size selection ------------------------------------------------------------------------ -->
+
+<p><strong>Size:</strong></p>
+<div class="radio__group">
+  <% product.sizes.forEach((size,index)=>{ %>
+    <div class="radio__button">
+      <% if(size.stock>0){ %>
+        <input type="radio" checked id="type<%= index %>" name="type" value="<%= size.value %>">
+        <% }else{ %>
+          <input disabled type="radio" id="type<%= index %>" name="type" value="<%= size.value %>">
+          <% } %>
+            <label data-icon="<%= size.value %>" for="type<%= index %>"></label>
+    </div>
+    <% }) %>
+</div>
+<!-- -----------------------------size selection END--------------------------------------- -->
+      
+      <% if(product.available) {%>
+      <p class="is-available text-center">In stock</p>
+      <%if (userAttributes.id == -1){%>
+        <a href="http://localhost:8081/api/user/authenticate" id="not-logged-in" class="btn btn-block btn-secondary mt-3 mb-3 button-style">
+          <span style="font-family:cursive;">Add to Shopping Cart</span> 
+         </a>
+      <%} else {%>
+        <a href="http://localhost:8081/cart-service/add-to-cart/<%=product.productCode%>" id="add-to-cart" class="btn btn-block btn-secondary mt-3 mb-3 button-style">
+          <span style="font-family:cursive;">Add to Shopping Cart</span> 
+         </a>
+      <%}%>
+      
+      <% } else { %>
+      <p class="is-not-available text-center">Sold out</p>
+      <%} %>
+      <% if(inWishlist){%>
+        <a href="http://localhost:8081/api/user/my-wishlist" id="view-wishlist" class="btn btn-block btn-secondary mt-3 mb-3 button-style-wishlist">
+          <i class="fas fa-heart"></i>&nbsp;<span style="font-family:cursive;">View WishList</span>
+        </a>
+        <%}else{%>
+          <%if(userAttributes.id == -1) {%>
+            <a href="http://localhost:8081/api/user/authenticate" id="not-logged-in"
+            class="btn btn-block btn-secondary mt-3 mb-3 button-style-wishlist">
+            <i class="far fa-heart"></i>&nbsp;<span style="font-family:cursive;">Add to WishList</span>
+            </a>
+            <%} else {%>
+              <a href="http://localhost:8081/bookmark-service/add-to-bookmarks/<%=product.productCode%>" id="add-to-wishlist"
+              class="btn btn-block btn-secondary mt-3 mb-3 button-style-wishlist">
+              <i class="far fa-heart"></i>&nbsp;<span style="font-family:cursive;">Add to WishList</span>
+              </a>
+            <%}%>
+      
+      <%}%>
+    </div>
+  </div>
+  <br />
+  <hr />
+
+<!-- -----------------------------SIMILAR START--------------------------------------- -->
+
+  <!-- THIS CAROUSAL WILL CONTAIN SIMILAR PRODUCTS -->
+  <div class="container mb-4 mt-4">
+    <!--Carousel Wrapper-->
+    <div
+      id="products-carousel"
+      class="carousel slide carousel-multi-item"
+      data-ride="carousel"
+    >
+      <!--Controls-->
+      <div class="controls-top mb-2">
+        <div class="row">
+          <div class="col-8">
+            <h3>Similar Products</h3>
+          </div>
+          <div class="col-4">
+            <div class="controls float-right hidden-xs">
+              <a
+                class="left fa fa-chevron-left btn btn"
+                href="#products-carousel"
+                data-slide="prev"
+              ></a
+              ><a
+                class="right fa fa-chevron-right btn"
+                href="#products-carousel"
+                data-slide="next"
+              ></a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--/.Controls-->
+  
+      <!--Slides-->
+      <div class="carousel-inner" role="listbox">
+       
+        <% for(let j=0; 3>j; j++){ %>
+           <!-- slide start -->
+           <% if(j==0){%>
+            <div class="carousel-item active">
+            <%}else{%>
+              <div class="carousel-item">
+              <%}%>
+          
+          <div class="row">
+            <% for(let i=j  ; j+3>i && products.length>i; i++) { %>
+            <div class="col-md-4 product-index-box">
+              <div class="single-product d-flex flex-column h-100">
+                <a
+                  class="title-link"
+                  href="http://localhost:8081/api/products/<%=products[i].category.slug%>/<%=products[i].productCode%>"
+                >
+                <% if(products[i].imgs[0].substring(0,4)=='http'){%>
+                  <img
+                    src="<%= products[i].imgs[0] %>"
+                    alt="Bag"
+                    class="img-fluid thumbnail"
+                /></a>  
+                  <%}else{%>
+                  <img
+                    src="http://localhost:8081/inventoryservice/products/<%= products[i].imgs[0] %>"
+                    alt="Bag"
+                    class="img-fluid thumbnail"
+                /></a>  
+                <%}%>
+                <div class="product-info">
+                  <a
+                    class="title-link"
+                    href="http://localhost:8081/api/products/<%=products[i].category.slug%>/<%=products[i].productCode%>"
+                  >
+                    <h6 class="mt-2 mb-2"><%= products[i].title %></h6></a
+                  >
+                  <div style="display: flex; flex-direction: row; justify-content: space-around;">
+                    <div class="rating">
+                     <span style="font-family:Arial, Helvetica, sans-serif;"> <%= products[i].avgRating %>&nbsp;</span>
+                      <div class="star-rating">
+                       <span class="star-rating__fill" style="width:<%= products[i].avgRating*20 %>%">
+                        </span>
+                      </div>
+                    </div>
+                    <div>
+                      <% if(products[i].offer>0){ %>
+                        <span class="float-right mr-3" style="color:#e9765b ;font-weight:500; font-size: 14px; font-family:Arial, Helvetica, sans-serif">(&nbsp;<%=products[i].offer%>%&nbsp;OFF)</span>
+                        <%}%>
+                        <br />
+                      <span class="price" style="font-size:16px;">Rs.&nbsp;<%= products[i].price %></span>
+                      <% if(products[i].offer>0){ %>
+                        <span style="color:rgb(137, 137, 137); font-size: 12px; text-decoration: line-through solid darkgrey;">Rs.&nbsp;<%=products[i].mrp%></span>
+                        <%}%>
+                    </div>
+                  </div>
+                  
+                </div>
+                <% if(products[i].available) {%>
+                  <div style="display: flex; justify-content: center; padding:10px 25px 30px 25px;">
+                    <select id="selection<%= i %>" class="form-select form-select-sm sizeSelection "
+                        aria-label=".form-select-sm example">
+                        <% products[i].sizes.forEach(size=>{ %>
+                            <% if(size.stock>0){ %>
+                                <option selected value="<%= size.value %>">
+                                    <%= size.value %>
+                                </option>
+                                <% }else{ %>
+                                    <option disabled value="<%= size.value %>">
+                                        <%= size.value %>
+                                    </option>
+                                    <% } %>
+                                        <% }) %>
+                    </select>
+                
+                    <a href="http://localhost:8081/cart-service/add-to-cart/<%=products[i].productCode%>" class="btn btn-block btn-secondary button-style mt-auto mb-2"
+                        id="<%= i %>" onclick="make_uri(this.id, this.href)">
+                        Add to Cart
+                    </a>
+                
+                </div>
+                <% } else { %>
+                <a
+                  href="#"
+                  class="btn btn-block btn-danger button-style-danger mt-2 mb-2"
+                >
+                  Sold out
+                </a>
+                <%} %>
+              </div>
+            </div>
+            <%}%>
+          </div>
+        </div>
+        <!-- slide end -->
+        <%}%>
+       
+        
+  
+       
+      </div>
+      <!--/.Slides-->
+    </div>
+    <!--/.Carousel Wrapper-->
+  </div>
+  <hr/>
+<!-- ------------------------------ REVIEW & RATING -------------------------------------------------- -->
+<span class="panelTitle">Rating & Reviews</span> <hr />
+</div>
+  <div class="reviewPanel">
+    <%reviews.forEach( review => {%>
+    <section class="rating__card">
+      <div class="rating__card__stars">
+        <span class="rating__card__stars__name"><%=review.name %><br></span>
+        <span class="rating__card__stars__date"><%=moment(review.createdAt).format( 'MMMM Do YYYY') %></span>
+      </div>
+      <div class="rating reviewrating">
+        <span style="font-size:15px"><%= review.rating %>&nbsp;</span>
+        <div class="star-rating" style="font-size: 20px;">
+          <span id="averageRating" class="star-rating__fill " style="font-size: 20px; width:<%= review.rating*20 %>%;">
+          </span>
+        </div>
+      </div>
+  
+      <blockquote class="rating__card__quote">“<%= review.reviewText %>”
+      </blockquote>
+  
+    </section>   
+    <% }) %>
+  </div>
+  <!-- ------------------------------ REVIEW & RATING ENd-------------------------------------------------- -->
+  <script>
+    $('#add-to-cart').on('click', e => {
+      let url = $('#add-to-cart').attr('href') + '/' + $('input[name="type"]:checked').val();
+      $('#add-to-cart').attr('href', url);
+      //console.log($('#add-to-cart').attr('href'));
+    });
+
+    $('#add-to-wishlist').on('click',e=>{
+      let uri = "http://localhost:8081/bookmark-service/add-to-bookmarks/"+$("#productCode").text();
+      $("#add-to-wishlist").attr('href',uri);
+    })
+
+    $("#gallery img").click(function(){
+        $("#gallery").find("img").removeClass("selected");
+        $(this).addClass("selected");
+        $(".product-img").attr("src", $(this).attr("src"))
+        $(".product-img").attr("xoriginal", $(this).attr("src"))
+      
+    })
+
+    
+  </script>
+
+
+  <script src='https://unpkg.com/xzoom/dist/xzoom.min.js'></script>
+  <script src='https://hammerjs.github.io/dist/hammer.min.js'></script>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.1/js/foundation.min.js'>
+  </script><script  src="http://localhost:8081/api/javascripts/zoom.js"></script>
+<%- include ("../partials/footer") %>

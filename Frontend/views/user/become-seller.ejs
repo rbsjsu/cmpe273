@@ -1,0 +1,95 @@
+<%- include ("../partials/header") %> <%- include ("../partials/categories-navbar") %>
+<body>
+    <div id="container">
+      <!--sidebar start-->
+      <div id="sidebar" class="nav-collapse">
+        <!-- sidebar menu start-->
+        <ul class="sidebar-menu" id="nav-accordion">
+          <li class="mt">
+            <a href="./my-profile">
+              <i class="fa fa-user"></i>
+              <span>Account & Information</span>
+            </a>
+          </li>
+          <li class="mt">
+            <a href="./my-addresses">
+              <i class="fa fa-map-marker"></i>
+              <span>My Addresses</span>
+            </a>
+          </li>
+          <li class="mt">
+            <a href="./my-orders">
+              <i class="fa fa-book"></i>
+              <span>My Orders</span>
+            </a>
+        </li>
+          <li class="mt">
+            <a href="./change-password">
+              <i class="fa fa-unlock-alt"></i>
+              <span>Change Password</span>
+            </a>
+          </li>
+          <li class="mt">
+            <a class="active" href="#">
+              <i class="fa fa-inr"></i>
+              <span>Become Seller</span>
+            </a>
+          </li>
+          <li class="mt">
+            <a href="#">
+              <i class="fa fa-power-off"></i>
+              <span>Logout</span>
+            </a>
+          </li>
+        </ul>
+        <!-- sidebar menu end-->
+      </div>
+      <!--main content start-->
+      <div id="main-content" class="col-md-6">
+  
+        <h3><i class="fa fa-angle-right"></i> Become Seller</h3>
+        <% if(userAttributes.role == "seller") { %>
+          <div class="alert alert-primary" role="alert">
+            You are registered as a Seller!
+          </div>
+          <div class="card border-primary" style="margin-bottom: 10px; padding: 20px; border: 2px solid lightblue">
+            <form >
+              <div class="form-group">
+                <label for="company">Company Name</label>
+                <input
+                  readonly
+                  type="text"
+                  class="form-control"
+                  value="<%= sellerObj.companyNameString%>"
+                />
+              </div>
+            </form>
+          </div>
+        <% } else { %>
+          <%if(queryObject.seller == "became"){%>
+            <div class="alert alert-primary" role="alert">Login again to see changes.</div>  
+          <%}%>
+        <div
+          class="card border-primary"
+          style="margin-bottom: 10px; padding: 20px; border: 2px solid lightblue"
+        >
+          <form action="http://localhost:8081/user-service/become-seller" method="POST">
+            <div class="form-group">
+              <label for="exampleInputEmail1">Company Name</label>
+              <input
+                type="text"
+                class="form-control"
+                id="exampleInputEmail1"
+                placeholder="Company Name"
+                name="companyNameString"
+                required
+              />
+            </div>
+            <button type="submit" class="btn btn-primary">Become Seller</button>
+          </form>
+        </div>
+        <% } %>
+      </div>
+    </div>
+  </body>
+  
