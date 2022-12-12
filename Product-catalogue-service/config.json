@@ -1,0 +1,113 @@
+{
+    "database":{
+        "uri":"mongodb+srv://rutvik:17bit008@productcatalog.poqge.mongodb.net/ProductCatalog?retryWrites=true&w=majority",
+        "name":"ProductCopy",
+        "collection":"ProductCopy"
+    },
+    "testDatabase":{
+        "uri": "mongodb://localhost/bags-ecommerce",
+        "name":"bags-ecommerce",
+        "collection":"ProductCopy"
+    },
+    "server":{
+        "port":3010
+    },
+    "searchAggragate":{
+      "autocomplete": [
+        {
+          "$search": {
+            "index": "autocomplete", 
+            "autocomplete": {
+              "query": "hand", 
+              "path": "title", 
+              "tokenOrder": "any", 
+              "fuzzy": {
+                "maxEdits": 1, 
+                "prefixLength": 2
+              }
+            }
+          }
+        }, {
+          "$limit": 10
+        }, {
+          "$project": {
+            "title": 1,
+            "_id":0
+          }
+        }
+      ],
+        
+        "fullTextSearch":[
+          {
+            "$search": {
+              "index": "FullTextSearch", 
+              "text": {
+                "query": "bags", 
+                "path": [
+                  "title", "shortDescription", "category", "feature.color", "feature.brand", "feature.suitedFor", "feature.material", "manufacturer.companyName"
+                ], 
+                "fuzzy": {
+                  "maxEdits": 1, 
+                  "prefixLength": 3
+                }, 
+                "score": {
+                  "boost": {
+                    "value": 100
+                  }
+                }
+              }
+            }
+          }, {
+            "$project": {
+              "title": 1,  
+              "imgs": 1, 
+              "productCode": 1, 
+              "price": 1, 
+              "mrp": 1, 
+              "offer": 1, 
+              "category": 1, 
+              "feature": 1, 
+              "manufacturer": 1, 
+              "avgRating": 1, 
+              "sizes": 1, 
+              "available": 1, 
+              "createdAt": 1, 
+              "score": {
+                "$meta": "searchScore"
+              }
+            }
+          }, {
+            "$sort": {
+              "score": -1
+            }
+          }, {
+            "$skip": 2
+          }, {
+            "$limit": 300
+          },{
+            "$lookup": {
+              "from": "categories", 
+              "localField": "category", 
+              "foreignField": "_id", 
+              "as": "category"
+            }
+          }
+        ]
+    },
+    "eureka":{
+      "host":"127.0.0.1",
+      "port":8761,
+      "hostname":"localhost",
+      "ipAddress":"127.0.0.1",
+      "enabled":true,
+      "dataCenter":{
+        "name":"MyOwn"
+      },
+      "servicePath":"/eureka/apps/",
+      "maxRetries":5,
+      "requestRetryDelay": 5000
+    },
+    "application":{
+      "name":"ProductCatalog"
+    }
+}

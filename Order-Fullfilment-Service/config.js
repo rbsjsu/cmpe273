@@ -1,0 +1,32 @@
+module.exports={
+    server:{
+        "port":"3005"
+    },
+    eureka:{
+        "host":"127.0.0.1",
+        "port":8761,
+        "hostname":"localhost",
+        "ipAddress":"127.0.0.1",
+        "enabled":true,
+        "dataCenter":{
+          "name":"MyOwn"
+        },
+        "servicePath":"/eureka/apps/",
+        "maxRetries":5,
+        "requestRetryDelay": 8000
+      },
+      "application":{
+        "name":"order-fullfillment"
+      },
+    jwtSecret:"secret",
+    kafka:{
+        "hostName":"localhost:9092",
+        "topics":{
+            "payment":"paymentStream",
+            "order":"OrderStream",
+            "email":"EmailStream",
+            "orderFulfillment":"OrderFulfillmentStream",
+            "inventory":"InventoryStream"
+        }
+    }
+}

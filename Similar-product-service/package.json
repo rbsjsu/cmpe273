@@ -1,0 +1,21 @@
+{
+  "name": "similar-products",
+  "version": "1.0.0",
+  "description": "Find similar product using product id",
+  "main": "index.js",
+  "scripts": {
+    "test": "nodemon index.js"
+  },
+  "keywords": [
+    "simlar",
+    "products"
+  ],
+  "author": "Rutvik Borad",
+  "license": "ISC",
+  "dependencies": {
+    "eureka-js-client": "^4.5.0",
+    "express": "^4.17.1",
+    "mongodb": "^3.6.6",
+    "nodemon": "^2.0.7"
+  }
+}

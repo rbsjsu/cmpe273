@@ -1,0 +1,81 @@
+{
+        "database":{
+          "uri":"mongodb+srv://rutvik:17bit008@productcatalog.poqge.mongodb.net/ProductCopy?retryWrites=true&w=majority",
+          "name":"ProductCopy",
+          "collection":"ProductCopy"
+      },
+    "server":{
+        "port":3001
+    },
+    "searchAggragate":{
+        "similarity":[
+          {
+            "$search": {
+              "index": "similarity", 
+              "text": {
+                "query": "que", 
+                "path": [
+                  "title", "shortDescription", "manufacturer.companyName"
+                ], 
+                "score": {
+                  "boost": {
+                    "value": 100
+                  }
+                }
+              }
+            }
+          }, {
+            "$project": {
+              "title": 1, 
+              "category": 1, 
+              "price": 1, 
+              "mrp": 1, 
+              "offer": 1, 
+              "imgs": 1, 
+              "productCode": 1, 
+              "available":1,
+              "sizes":1,
+               "avgRating":1,
+              "score": {
+                "$meta": "searchScore"
+              }
+            }
+          }, {
+            "$sort": {
+              "score": -1
+            }
+          },{
+            "$match": {
+              "productCode": {
+                "$ne": "683538785"
+              }
+            }
+          }, {
+            "$limit": 9
+          },{
+            "$lookup": {
+              "from": "categories", 
+              "localField": "category", 
+              "foreignField": "_id", 
+              "as": "category"
+            }
+          }
+        ]
+    },
+    "eureka":{
+      "host":"127.0.0.1",
+      "port":8761,
+      "hostname":"localhost",
+      "ipAddress":"127.0.0.1",
+      "enabled":true,
+      "dataCenter":{
+        "name":"MyOwn"
+      },
+      "servicePath":"/eureka/apps/",
+      "maxRetries":5,
+      "requestRetryDelay": 20000
+    },
+    "application":{
+      "name":"similarproducts"
+    }
+}
